@@ -1,17 +1,77 @@
 import { Router } from 'express';
+import fs from 'fs';
+import User from '../models/User';
+import {
+  deleteAll,
+  deleteUser,
+  getUser,
+  getUsers,
+  updateUser,
+} from '../repositories/UserRepository';
+
+import { createUser } from '../services/CreateUserService';
+const data = require('../users.json');
 
 const routes = Router();
 
-routes.get('/', (request, response) => response.send({ ok: true }));
+routes.get('/', (request, response) => {
+  return response.json(data);
+});
 
-routes.get('/:users_id', (request, response) => response.send({ ok: true }));
+routes.get('/:user_id', (request, response) => {
+  // const usersJson = fs.readFileSync('./src/users.json', 'utf-8');
 
-routes.post('/', (request, response) => response.send({ ok: true }));
+  // const { users } = JSON.parse(usersJson);
+  // const user = users.filter(
+  //   (user: any) => user.id == request.params.user_id,
+  // )[0];
 
-routes.put('/:users_id', (request, response) => response.send({ ok: true }));
+  // if (!user) {
+  //   return response.status(404).send('Not found');
+  // }
+  const user = getUser(request.params.user_id);
 
-routes.delete('/', (request, response) => response.send({ ok: true }));
+  return response.json(user);
+});
 
-routes.delete('/:users_id', (request, response) => response.send({ ok: true }));
+routes.post('/', (request, response) => {
+  const { email, password } = request.body;
+  const user = createUser({ email, password });
+  delete user.password;
+
+  return response.json(user);
+});
+
+routes.put('/:user_id', (request, response) => {
+  const { email, password } = request.body;
+  const usersRepo = getUsers();
+  const user = usersRepo.users.filter(
+    (user: User) => user.id === request.params.user_id,
+  );
+
+  if (!user) {
+    return response.status(404).send('Not found');
+  }
+
+  const updatedUser = updateUser({
+    id: request.params.user_id,
+    email,
+    password,
+  });
+
+  return response.json(updatedUser);
+});
+
+routes.delete('/', (request, response) => {
+  deleteAll();
+
+  return response.json(data);
+});
+
+routes.delete('/:user_id', (request, response) => {
+  deleteUser(request.params.user_id);
+
+  return response.status(200).send('User removed');
+});
 
 export default routes;

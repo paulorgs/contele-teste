@@ -6,6 +6,7 @@ const baseUrl = '/api/v1/users';
 
 const app = express();
 
+app.use(express.json());
 app.use(baseUrl, routes);
 
 app.listen(3000, () => {
