@@ -41,9 +41,10 @@ export function updateUser(user: User): any {
     throw new CustomError('Not found', 404);
   }
 
-  var elementPos = usersRepo.users.map((us: User) => us.id).indexOf(user.id);
-  var objectFound = usersRepo.users[elementPos];
-  console.log(objectFound);
+  const elementPosition = usersRepo.users
+    .map((us: User) => us.id)
+    .indexOf(user.id);
+  const objectFound = usersRepo.users[elementPosition];
 
   verifyIfEmailIsUsed(user.email);
 
@@ -53,7 +54,7 @@ export function updateUser(user: User): any {
     password: user.password,
   };
 
-  usersRepo.users.splice(elementPos, 1);
+  usersRepo.users.splice(elementPosition, 1);
   usersRepo.users.push(updatedUser);
 
   fs.writeFileSync('./src/users.json', JSON.stringify(usersRepo), 'utf-8');
@@ -66,8 +67,10 @@ export function deleteUser(id: string): void {
   if (usersRepo.users.length === 0) {
     throw new CustomError('Not found', 404);
   }
-  const userToDelete = usersRepo.users.filter((user: User) => user.id === id);
-  usersRepo.users.pop(userToDelete);
+
+  const elementPosition = usersRepo.users.map((us: User) => us.id).indexOf(id);
+  const objectFound = usersRepo.users[elementPosition];
+  usersRepo.users.splice(elementPosition, 1);
   fs.writeFileSync('./src/users.json', JSON.stringify(usersRepo), 'utf-8');
 }
 
