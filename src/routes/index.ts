@@ -1,7 +1,5 @@
 import { Router } from 'express';
-import fs from 'fs';
 import CustomError from '../errors/CustomError';
-import { verifyIfEmailIsUsed } from '../helpers/Helpers';
 import User from '../models/User';
 import {
   deleteAll,
@@ -21,16 +19,6 @@ routes.get('/', (request, response) => {
 });
 
 routes.get('/:user_id', (request, response) => {
-  // const usersJson = fs.readFileSync('./src/users.json', 'utf-8');
-
-  // const { users } = JSON.parse(usersJson);
-  // const user = users.filter(
-  //   (user: any) => user.id == request.params.user_id,
-  // )[0];
-
-  // if (!user) {
-  //   return response.status(404).send('Not found');
-  // }
   const user = getUser(request.params.user_id);
 
   return response.json(user);
