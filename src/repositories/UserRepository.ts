@@ -7,7 +7,7 @@ export function getUser(id: string): any {
   const usersRepo = getUsers();
   const user = usersRepo.users.filter((user: User) => user.id === id);
 
-  if (!user?.id) {
+  if (!user[0]) {
     throw new CustomError('User not found', 404);
   }
 
