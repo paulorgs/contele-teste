@@ -43,6 +43,7 @@ export function updateUser(user: User): any {
 
   var elementPos = usersRepo.users.map((us: User) => us.id).indexOf(user.id);
   var objectFound = usersRepo.users[elementPos];
+  console.log(objectFound);
 
   verifyIfEmailIsUsed(user.email);
 
@@ -52,7 +53,7 @@ export function updateUser(user: User): any {
     password: user.password,
   };
 
-  usersRepo.users.splice(objectFound);
+  usersRepo.users.splice(elementPos, 1);
   usersRepo.users.push(updatedUser);
 
   fs.writeFileSync('./src/users.json', JSON.stringify(usersRepo), 'utf-8');
