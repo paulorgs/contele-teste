@@ -26,9 +26,14 @@ routes.get('/:user_id', (request, response) => {
 
 routes.post('/', (request, response) => {
   const { email, password } = request.body;
+
   if (typeof email !== 'string' || typeof password !== 'string') {
-    throw new CustomError('This field must be string', 400);
+    throw new CustomError(
+      'Email and password must be string and are required.',
+      400,
+    );
   }
+
   const user = createUser({ email, password });
 
   return response.json(user);
@@ -38,7 +43,10 @@ routes.put('/:user_id', (request, response) => {
   const { email, password } = request.body;
 
   if (typeof email !== 'string' || typeof password !== 'string') {
-    throw new CustomError('This field must be string', 400);
+    throw new CustomError(
+      'Email and password must be string and are required.',
+      400,
+    );
   }
   const usersRepo = getUsers();
   const user = usersRepo.users.filter(
