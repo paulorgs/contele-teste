@@ -1,4 +1,5 @@
 import fs from 'fs';
+import CustomError from '../errors/CustomError';
 
 import User from '../models/User';
 
@@ -6,8 +7,8 @@ export function getUser(id: string): any {
   const usersRepo = getUsers();
   const user = usersRepo.users.filter((user: User) => user.id === id);
 
-  if (!user) {
-    throw new Error('User not found');
+  if (!user?.id) {
+    throw new CustomError('User not found', 404);
   }
 
   return user;
@@ -34,10 +35,9 @@ export function updateUser(user: User): any {
   const oldDataUser = usersRepo.users.filter(
     (userToUpdate: User) => userToUpdate.id === user.id,
   );
-  console.log(oldDataUser);
 
-  if (!oldDataUser) {
-    throw new Error('Invalid ID');
+  if (!oldDataUser[0]?.id) {
+    throw new CustomError('Invalid ID');
   }
 
   const updatedUser = {
@@ -57,6 +57,9 @@ export function updateUser(user: User): any {
 
 export function deleteUser(id: string): void {
   const usersRepo = getUsers();
+  if (usersRepo.users.length === 0) {
+    throw new CustomError('Not found', 404);
+  }
   const userToDelete = usersRepo.users.filter((user: User) => user.id === id);
   usersRepo.users.pop(userToDelete);
   fs.writeFileSync('./src/users.json', JSON.stringify(usersRepo), 'utf-8');
@@ -64,6 +67,9 @@ export function deleteUser(id: string): void {
 
 export function deleteAll() {
   const usersRepo = getUsers();
+  if (usersRepo.users.length === 0) {
+    throw new CustomError('Nothing to remove', 404);
+  }
 
   usersRepo.users = [];
 

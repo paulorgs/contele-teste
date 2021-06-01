@@ -16,6 +16,8 @@ export function createUser({ email, password }: Request): any {
 
   save(newUser);
 
+  return newUser;
+
   // let usersjson = fs.readFileSync('./src/users.json', 'utf-8');
 
   // let users = JSON.parse(usersjson);
@@ -26,6 +28,4 @@ export function createUser({ email, password }: Request): any {
   // users.users.push(newUser);
   // usersjson = JSON.stringify(users);
   // fs.writeFileSync('./src/users.json', usersjson, 'utf-8');
-
-  return newUser;
 }

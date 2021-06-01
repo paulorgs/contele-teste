@@ -65,13 +65,13 @@ routes.put('/:user_id', (request, response) => {
 routes.delete('/', (request, response) => {
   deleteAll();
 
-  return response.json(data);
+  return response.status(204).send();
 });
 
 routes.delete('/:user_id', (request, response) => {
   deleteUser(request.params.user_id);
 
-  return response.status(200).send('User removed');
+  return response.status(204).send();
 });
 
 export default routes;
