@@ -1,5 +1,7 @@
 import { Router } from 'express';
 import fs from 'fs';
+import CustomError from '../errors/CustomError';
+import { verifyIfEmailIsUsed } from '../helpers/Helpers';
 import User from '../models/User';
 import {
   deleteAll,
@@ -36,14 +38,20 @@ routes.get('/:user_id', (request, response) => {
 
 routes.post('/', (request, response) => {
   const { email, password } = request.body;
+  if (typeof email !== 'string' || typeof password !== 'string') {
+    throw new CustomError('This field must be string', 400);
+  }
   const user = createUser({ email, password });
-  delete user.password;
 
   return response.json(user);
 });
 
 routes.put('/:user_id', (request, response) => {
   const { email, password } = request.body;
+
+  if (typeof email !== 'string' || typeof password !== 'string') {
+    throw new CustomError('This field must be string', 400);
+  }
   const usersRepo = getUsers();
   const user = usersRepo.users.filter(
     (user: User) => user.id === request.params.user_id,
@@ -52,7 +60,6 @@ routes.put('/:user_id', (request, response) => {
   if (!user) {
     return response.status(404).send('Not found');
   }
-
   const updatedUser = updateUser({
     id: request.params.user_id,
     email,

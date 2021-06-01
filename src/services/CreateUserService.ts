@@ -1,6 +1,8 @@
 import { v4 as uuidv4, v4 } from 'uuid';
+import CustomError from '../errors/CustomError';
+import { verifyIfEmailIsUsed } from '../helpers/Helpers';
 import User from '../models/User';
-import { save } from '../repositories/UserRepository';
+import { getUsers, save } from '../repositories/UserRepository';
 
 interface Request {
   email: string;
@@ -14,18 +16,19 @@ export function createUser({ email, password }: Request): any {
     password: password,
   } as User;
 
+  verifyIfEmailIsUsed(email);
   save(newUser);
 
   return newUser;
-
-  // let usersjson = fs.readFileSync('./src/users.json', 'utf-8');
-
-  // let users = JSON.parse(usersjson);
-  // console.log(usersjson);
-
-  // console.log(users);
-
-  // users.users.push(newUser);
-  // usersjson = JSON.stringify(users);
-  // fs.writeFileSync('./src/users.json', usersjson, 'utf-8');
 }
+
+// let usersjson = fs.readFileSync('./src/users.json', 'utf-8');
+
+// let users = JSON.parse(usersjson);
+// console.log(usersjson);
+
+// console.log(users);
+
+// users.users.push(newUser);
+// usersjson = JSON.stringify(users);
+// fs.writeFileSync('./src/users.json', usersjson, 'utf-8');

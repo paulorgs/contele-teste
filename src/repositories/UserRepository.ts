@@ -1,5 +1,6 @@
 import fs from 'fs';
 import CustomError from '../errors/CustomError';
+import { verifyIfEmailIsUsed } from '../helpers/Helpers';
 
 import User from '../models/User';
 
@@ -37,8 +38,13 @@ export function updateUser(user: User): any {
   );
 
   if (!oldDataUser[0]?.id) {
-    throw new CustomError('Invalid ID');
+    throw new CustomError('Not found', 404);
   }
+
+  var elementPos = usersRepo.users.map((us: User) => us.id).indexOf(user.id);
+  var objectFound = usersRepo.users[elementPos];
+
+  verifyIfEmailIsUsed(user.email);
 
   const updatedUser = {
     id: oldDataUser[0].id,
@@ -46,10 +52,9 @@ export function updateUser(user: User): any {
     password: user.password,
   };
 
-  usersRepo.users.pop(oldDataUser[0]);
-
+  usersRepo.users.splice(objectFound);
   usersRepo.users.push(updatedUser);
-  usersRepo.users.sort();
+
   fs.writeFileSync('./src/users.json', JSON.stringify(usersRepo), 'utf-8');
 
   return updatedUser;
